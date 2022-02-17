@@ -1,0 +1,4 @@
+﻿Add
+- dotnet ef migrations add Initial —project TicketOffice.Data —startup-project TicketOffice
+Update
+dotnet ef database update --project TicketOffice.Data --startup-project TicketOffice
