@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TicketOffice.Data;
 
@@ -11,9 +12,10 @@ using TicketOffice.Data;
 namespace TicketOffice.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220218103827_update_passenger")]
+    partial class update_passenger
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,13 +41,10 @@ namespace TicketOffice.Data.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
-                    b.Property<int>("TicketId")
+                    b.Property<int>("PlaneId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TicketId")
-                        .IsUnique();
 
                     b.ToTable("Flights");
                 });
@@ -92,9 +91,6 @@ namespace TicketOffice.Data.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
-                    b.Property<int>("FlightId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Manufacturer")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -107,9 +103,6 @@ namespace TicketOffice.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FlightId")
-                        .IsUnique();
 
                     b.ToTable("Planes");
                 });
@@ -125,6 +118,9 @@ namespace TicketOffice.Data.Migrations
                     b.Property<string>("Class")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FlightId")
+                        .HasColumnType("int");
 
                     b.Property<int>("GateNumber")
                         .HasColumnType("int");
@@ -142,28 +138,6 @@ namespace TicketOffice.Data.Migrations
                     b.ToTable("Tickets");
                 });
 
-            modelBuilder.Entity("TicketOffice.Data.Entities.Flight", b =>
-                {
-                    b.HasOne("TicketOffice.Data.Entities.Ticket", "Ticket")
-                        .WithOne("Flight")
-                        .HasForeignKey("TicketOffice.Data.Entities.Flight", "TicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Ticket");
-                });
-
-            modelBuilder.Entity("TicketOffice.Data.Entities.Plane", b =>
-                {
-                    b.HasOne("TicketOffice.Data.Entities.Flight", "Flight")
-                        .WithOne("Plane")
-                        .HasForeignKey("TicketOffice.Data.Entities.Plane", "FlightId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Flight");
-                });
-
             modelBuilder.Entity("TicketOffice.Data.Entities.Ticket", b =>
                 {
                     b.HasOne("TicketOffice.Data.Entities.Passenger", "Passanger")
@@ -175,21 +149,9 @@ namespace TicketOffice.Data.Migrations
                     b.Navigation("Passanger");
                 });
 
-            modelBuilder.Entity("TicketOffice.Data.Entities.Flight", b =>
-                {
-                    b.Navigation("Plane")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("TicketOffice.Data.Entities.Passenger", b =>
                 {
                     b.Navigation("Tickets");
-                });
-
-            modelBuilder.Entity("TicketOffice.Data.Entities.Ticket", b =>
-                {
-                    b.Navigation("Flight")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

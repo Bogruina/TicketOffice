@@ -12,8 +12,8 @@ using TicketOffice.Data;
 namespace TicketOffice.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220217133220_Initial")]
-    partial class Initial
+    [Migration("20220218105138_update_entities")]
+    partial class update_entities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -41,12 +41,13 @@ namespace TicketOffice.Data.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
-                    b.Property<int>("PlaneId")
+                    b.Property<int>("TicketId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PlaneId");
+                    b.HasIndex("TicketId")
+                        .IsUnique();
 
                     b.ToTable("Flights");
                 });
@@ -65,21 +66,19 @@ namespace TicketOffice.Data.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("ThirdName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TicketId")
-                        .HasColumnType("int");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TicketId");
 
                     b.ToTable("Passengers");
                 });
@@ -95,6 +94,9 @@ namespace TicketOffice.Data.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
+                    b.Property<int>("FlightId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Manufacturer")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -107,6 +109,9 @@ namespace TicketOffice.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FlightId")
+                        .IsUnique();
 
                     b.ToTable("Planes");
                 });
@@ -123,10 +128,10 @@ namespace TicketOffice.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("FlightId")
+                    b.Property<int>("GateNumber")
                         .HasColumnType("int");
 
-                    b.Property<int>("GateNumber")
+                    b.Property<int>("PassengerId")
                         .HasColumnType("int");
 
                     b.Property<int>("Seat")
@@ -134,42 +139,59 @@ namespace TicketOffice.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FlightId");
+                    b.HasIndex("PassengerId");
 
                     b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("TicketOffice.Data.Entities.Flight", b =>
                 {
-                    b.HasOne("TicketOffice.Data.Entities.Plane", "Plane")
-                        .WithMany()
-                        .HasForeignKey("PlaneId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Plane");
-                });
-
-            modelBuilder.Entity("TicketOffice.Data.Entities.Passenger", b =>
-                {
                     b.HasOne("TicketOffice.Data.Entities.Ticket", "Ticket")
-                        .WithMany()
-                        .HasForeignKey("TicketId")
+                        .WithOne("Flight")
+                        .HasForeignKey("TicketOffice.Data.Entities.Flight", "TicketId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Ticket");
                 });
 
-            modelBuilder.Entity("TicketOffice.Data.Entities.Ticket", b =>
+            modelBuilder.Entity("TicketOffice.Data.Entities.Plane", b =>
                 {
                     b.HasOne("TicketOffice.Data.Entities.Flight", "Flight")
-                        .WithMany()
-                        .HasForeignKey("FlightId")
+                        .WithOne("Plane")
+                        .HasForeignKey("TicketOffice.Data.Entities.Plane", "FlightId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Flight");
+                });
+
+            modelBuilder.Entity("TicketOffice.Data.Entities.Ticket", b =>
+                {
+                    b.HasOne("TicketOffice.Data.Entities.Passenger", "Passanger")
+                        .WithMany("Tickets")
+                        .HasForeignKey("PassengerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Passanger");
+                });
+
+            modelBuilder.Entity("TicketOffice.Data.Entities.Flight", b =>
+                {
+                    b.Navigation("Plane")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("TicketOffice.Data.Entities.Passenger", b =>
+                {
+                    b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("TicketOffice.Data.Entities.Ticket", b =>
+                {
+                    b.Navigation("Flight")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

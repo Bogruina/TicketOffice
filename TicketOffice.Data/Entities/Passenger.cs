@@ -9,10 +9,7 @@ namespace TicketOffice.Data.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string? ThirdName { get; set; }
-        [NotMapped]
-        public DateOnly Birthday { get; set; }
         public string Email { get; set; }
-        public int TicketId { get; set; }
-        public Ticket Ticket { get; set; }
+        public List<Ticket> Tickets { get; set; }
     }
 }

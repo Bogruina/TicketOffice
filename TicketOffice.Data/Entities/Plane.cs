@@ -8,5 +8,8 @@ namespace TicketOffice.Data.Entities
         public int Capacity { get; set; }
         public int MaxSpeed { get; set; }
         public string Manufacturer { get; set; }
+
+        public int FlightId { get; set; }
+        public Flight Flight { get; set; }
     }
 }
